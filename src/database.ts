@@ -6,7 +6,7 @@ const sequelize = new Sequelize({
 	port: 3306,
 	username: 'root',
 	password: 'kai-route66',
-	database: 'apollo-api'
+	database: 'apollo'
 })
 
 export { sequelize };
