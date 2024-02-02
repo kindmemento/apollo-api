@@ -25,3 +25,24 @@ export const addIndex = async (req: Request, res: Response) => {
 		return res.status(500).json({ error: "Internal server error" })
 	}
 }
+
+export const deleteIndex = async (req: Request, res: Response) => {
+	try {
+		const { indexId } = req.params;
+
+		// Find index by ID
+		const index = await Index.findByPk(indexId);
+
+		if (!index) {
+			return res.status(404).json({ error: "Index not found" });
+		}
+
+		// Delete index
+		await index.destroy()
+
+		return res.status(200).json({ message: "Index deleted successfully" });
+	} catch (error) {
+		console.error("Error deleting index:", error);
+		return res.status(500).json({ error: "Internal server error" })
+	}
+}
