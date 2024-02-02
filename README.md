@@ -21,3 +21,24 @@ Then defined a User model in /src/models/user.ts
 Implemented a basic signup, login, and login system in authController, then used JSON Web Token to introduce authentication through tokens.
 Tokens are generated and sent to client on login, and invalidated on logout.
 Implemented authenticateUser middleware function to protect certain routes/endpoints before proceeding to process.
+
+
+Next, I designed the system for addIndex and deleteIndex features, starting with database table/schema design, then ORM models, then the actual server-side logic.
+
+Used below two SQL queries to create Indexes and Consumptions tables in dB:
+
+CREATE TABLE Indexes (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    userId INT UNSIGNED NOT NULL,
+    indexDate DATE NOT NULL,
+    indexValue INT NOT NULL,
+    CONSTRAINT fk_user_id FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Consumptions (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    userId INT UNSIGNED NOT NULL,
+    consumptionDate DATE NOT NULL,
+    consumptionValue INT NOT NULL,
+    CONSTRAINT fk_user_id FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
+);
