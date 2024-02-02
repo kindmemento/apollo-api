@@ -1,6 +1,6 @@
-// Consumption.ts
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../database';
+import { User } from "./user";
 
 class Consumption extends Model {
     public id!: number;
@@ -39,5 +39,8 @@ Consumption.init(
         modelName: 'Consumption',
     }
 );
+
+// Define foreign key constraint with a unique name
+Consumption.belongsTo(User, { foreignKey: { name: 'fk_consumption_user_id', allowNull: false }, onDelete: 'CASCADE' });
 
 export { Consumption };
