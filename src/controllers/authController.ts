@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/user';
+import dotenv from 'dotenv';
 
+dotenv.config()
 const jwtSecret = process.env.JWT_SECRET as string;
 
 export const signup = async (req: Request, res: Response) => {
