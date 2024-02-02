@@ -32,7 +32,7 @@ CREATE TABLE Indexes (
     userId INT UNSIGNED NOT NULL,
     indexDate DATE NOT NULL,
     indexValue INT NOT NULL,
-    CONSTRAINT fk_user_id FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
+    CONSTRAINT fk_index_user_id FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Consumptions (
@@ -40,5 +40,5 @@ CREATE TABLE Consumptions (
     userId INT UNSIGNED NOT NULL,
     consumptionDate DATE NOT NULL,
     consumptionValue INT NOT NULL,
-    CONSTRAINT fk_user_id FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
+    CONSTRAINT fk_consumption_user_id FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
 );
