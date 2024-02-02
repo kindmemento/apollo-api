@@ -17,3 +17,7 @@ CREATE TABLE users (
 );
 
 Then defined a User model in /src/models/user.ts
+
+Implemented a basic signup, login, and login system in authController, then used JSON Web Token to introduce authentication through tokens.
+Tokens are generated and sent to client on login, and invalidated on logout.
+Implemented authenticateUser middleware function to protect certain routes/endpoints before proceeding to process.
