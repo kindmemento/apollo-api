@@ -1,4 +1,3 @@
-// src/index.ts
 import express from 'express';
 import bodyParser from 'body-parser';
 import routes from './routes';
@@ -6,6 +5,7 @@ import { sequelize } from './database';
 import dotenv from 'dotenv';
 
 dotenv.config();
+console.log('Loaded environment variables:', process.env);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
