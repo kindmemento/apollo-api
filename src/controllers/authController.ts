@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/user';
 
+const jwtSecret = process.env.JWT_SECRET as string;
+
 export const signup = async (req: Request, res: Response) => {
     const { email, password, companyName } = req.body;
     try {
@@ -32,7 +34,7 @@ export const login = async (req: Request, res: Response) => {
 					return res.status(401).json({ error: 'Invalid password' });
 			}
 			// Generate JWT token
-			const token = jwt.sign({ userId: user.id }, 'your_secret_key');
+			const token = jwt.sign({ userId: user.id }, jwtSecret);
 			return res.status(200).json({ token });
 	} catch (error) {
 			console.error('Error logging in:', error);
