@@ -8,7 +8,7 @@ Created directory /src, index.ts (main entrypoint to API) and database.ts (for e
 Used the below SQL query to create a User schema in dB:
 
 CREATE TABLE users (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     companyName VARCHAR(100) NOT NULL,
@@ -28,16 +28,16 @@ Next, I designed the system for addIndex and deleteIndex features, starting with
 Used below two SQL queries to create Indexes and Consumptions tables in dB:
 
 CREATE TABLE Indexes (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    userId INT UNSIGNED NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
     indexDate DATE NOT NULL,
     indexValue INT NOT NULL,
     CONSTRAINT fk_index_user_id FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Consumptions (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    userId INT UNSIGNED NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
     consumptionDate DATE NOT NULL,
     consumptionValue INT NOT NULL,
     CONSTRAINT fk_consumption_user_id FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
