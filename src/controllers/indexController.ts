@@ -4,7 +4,8 @@ import { Consumption } from "../models/consumption";
 
 export const addIndex = async (req: Request, res: Response) => {
 	try {
-		const { userId, indexDate, indexValue } = req.body;
+		let userId = req.userId || req.body.userId // Attempt to extract userId from request headers first, fallback to request body as a failsafe
+		const { indexDate, indexValue } = req.body;
 
 		// Validate input data
 		if (!userId || !indexDate || !indexValue) {
@@ -12,7 +13,7 @@ export const addIndex = async (req: Request, res: Response) => {
 		}
 
 		// Insert index value into Indexes table
-		await Index.create({ userId, indexDate, indexValue });
+		await Index.create({ userId: userId, indexDate, indexValue });
 
 		// @TODO: Calculate consumption
 		const consumptionValue = 0; // Placeholder for now
