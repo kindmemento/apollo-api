@@ -41,6 +41,6 @@ Index.init(
 );
 
 // Define foreign key constraint with a unique name
-Index.belongsTo(User, { foreignKey: { name: 'fk_index_user_id', allowNull: false }, onDelete: 'CASCADE' });
+Index.belongsTo(User, { foreignKey: { name: 'userId', allowNull: false }, onDelete: 'CASCADE' });
 
 export { Index };

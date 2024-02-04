@@ -41,6 +41,6 @@ Consumption.init(
 );
 
 // Define foreign key constraint with a unique name
-Consumption.belongsTo(User, { foreignKey: { name: 'fk_consumption_user_id', allowNull: false }, onDelete: 'CASCADE' });
+Consumption.belongsTo(User, { foreignKey: { name: 'userId', allowNull: false }, onDelete: 'CASCADE' });
 
 export { Consumption };
