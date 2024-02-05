@@ -91,14 +91,14 @@ Created directory /src, index.ts (main entrypoint to API) and database.ts (for e
 Used the below SQL query to create a User schema in dB:
 
 ```sql
-	CREATE TABLE users (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	email VARCHAR(100) NOT NULL UNIQUE,
-	password VARCHAR(255) NOT NULL,
-	companyName VARCHAR(100) NOT NULL,
-	createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-	);
+CREATE TABLE users (
+id INT AUTO_INCREMENT PRIMARY KEY,
+email VARCHAR(100) NOT NULL UNIQUE,
+password VARCHAR(255) NOT NULL,
+companyName VARCHAR(100) NOT NULL,
+createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 ```
 
 Then defined a User model in /src/models/user.ts
