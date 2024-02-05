@@ -90,14 +90,16 @@ Created directory /src, index.ts (main entrypoint to API) and database.ts (for e
 
 Used the below SQL query to create a User schema in dB:
 
-CREATE TABLE users (
-id INT AUTO_INCREMENT PRIMARY KEY,
-email VARCHAR(100) NOT NULL UNIQUE,
-password VARCHAR(255) NOT NULL,
-companyName VARCHAR(100) NOT NULL,
-createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+```sql
+	CREATE TABLE users (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	email VARCHAR(100) NOT NULL UNIQUE,
+	password VARCHAR(255) NOT NULL,
+	companyName VARCHAR(100) NOT NULL,
+	createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+	);
+```
 
 Then defined a User model in /src/models/user.ts
 
@@ -109,6 +111,7 @@ Next, I designed the system for addIndex and deleteIndex features, starting with
 
 Used below two SQL queries to create Indexes and Consumptions tables in dB:
 
+```sql
 CREATE TABLE Indexes (
 id INT AUTO_INCREMENT PRIMARY KEY,
 userId INT NOT NULL,
@@ -128,6 +131,7 @@ createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 CONSTRAINT fk_consumption_user_id FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
 );
+```
 
 I then implemented the addIndex method of indexController, which is the most complicated part of this simple server.
 
