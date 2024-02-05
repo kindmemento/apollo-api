@@ -4,7 +4,7 @@
   "description": "I first created a new directory, opened it up on VSCode, and using its built-in terminal, initialized an NPM project with TypeScript.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "startServer": "tsc && node src/index.js"
   },
   "keywords": [],
