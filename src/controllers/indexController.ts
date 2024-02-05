@@ -6,23 +6,20 @@ import { User } from "../models/user"
 
 export const addIndex = async (req: Request, res: Response) => {
 	try {
-		const userId = req.userId || req.body.userId // Attempt to extract userId from request headers first, fallback to request body as a failsafe
+		const userId = req.userId || req.body.userId
 		const { indexDate, indexValue } = req.body
 
 		if (!userId || !indexDate || !indexValue || indexValue < 0) {
 			return res.status(400).json({ error: "Invalid or missing fields in the request body" })
 		}
 
-		// To reduce computational cost, return without proceeding if user does not exist
 		const existingUser = await User.findOne({ where: { id: userId } })
 		if (!existingUser) {
 			return res.status(404).json({ error: "User not found" })
 		}
 
-		await Index.create({ userId, indexDate, indexValue })
-
 		// Check for previous entries
-		let previousIndex = await Index.findOne({
+		let earlierRecord: Index | null = await Index.findOne({
 			where: {
 				userId,
 				indexDate: {
@@ -30,12 +27,12 @@ export const addIndex = async (req: Request, res: Response) => {
 				},
 			},
 			order: [["indexDate", "DESC"]],
-			attributes: ["indexValue", "indexDate"], // Fetch both indexValue and indexDate
+			attributes: ["indexValue", "indexDate"],
 		})
 
-		if (!previousIndex) {
+		if (!earlierRecord) {
 			// If no records are found before the current index date, attempt to find the earliest index date after the current index date
-			previousIndex = await Index.findOne({
+			earlierRecord = await Index.findOne({
 				where: {
 					userId,
 					indexDate: {
@@ -47,18 +44,22 @@ export const addIndex = async (req: Request, res: Response) => {
 			})
 		}
 
-		if (!previousIndex) {
+		if (!earlierRecord) {
 			// If this is the first index record, consumption can/will not be recorded and calculated.
+			await Index.create({ userId, indexDate, indexValue })
 			return res.status(201).json({ message: "Index added successfully." })
 		}
 
 		// Calculate consumption and create records for each day in between
-		const consumptionValue = Math.abs(indexValue - previousIndex.indexValue)
-		const startDate = previousIndex.indexDate < indexDate ? previousIndex.indexDate : indexDate
-		const endDate = previousIndex.indexDate < indexDate ? indexDate : previousIndex.indexDate
+		const consumptionValue = Math.abs(indexValue - earlierRecord.indexValue)
+		const startDate = earlierRecord.indexDate < indexDate ? earlierRecord.indexDate : indexDate
+		const endDate = earlierRecord.indexDate < indexDate ? indexDate : earlierRecord.indexDate
 		const consumptionDates = getDatesInRange(startDate, endDate)
 
-		// Insert consumption records for each day in between
+		// Insert index record
+		await Index.create({ userId, indexDate, indexValue })
+
+		// Insert consumption records
 		if (consumptionValue > 0 && consumptionDates.length > 0) {
 			const consumptionPerDay = consumptionValue / consumptionDates.length
 			for (const date of consumptionDates) {
@@ -68,10 +69,9 @@ export const addIndex = async (req: Request, res: Response) => {
 					consumptionValue: consumptionPerDay,
 				})
 			}
-			return res.status(201).json({ message: "Index and consumption added successfully." })
 		}
 
-		return res.status(201).json({ message: "Index added successfully." })
+		return res.status(201).json({ message: "Index and consumption added successfully." })
 	} catch (error) {
 		console.error("Error adding index:", error)
 		return res.status(500).json({ error: "Internal server error" })
@@ -83,11 +83,6 @@ const getDatesInRange = (startDate: Date, endDate: Date): Date[] => {
 	const dates: Date[] = []
 	let currentDate = new Date(startDate)
 	const end = new Date(endDate)
-
-	// Handle case where start and end dates are the same
-	if (currentDate.getTime() === end.getTime()) {
-		return [new Date(startDate)]
-	}
 
 	while (currentDate < end) {
 		dates.push(new Date(currentDate))
