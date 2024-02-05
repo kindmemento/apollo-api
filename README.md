@@ -29,7 +29,7 @@ Follow these steps to set up the project:
     createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   );
-  	CREATE TABLE Indexes (
+  CREATE TABLE Indexes (
   id INT AUTO_INCREMENT PRIMARY KEY,
   userId INT NOT NULL,
   indexDate DATE NOT NULL,
@@ -38,7 +38,6 @@ Follow these steps to set up the project:
   updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_index_user_id FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
   );
-  ```
   CREATE TABLE Consumptions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   userId INT NOT NULL,
