@@ -1,4 +1,4 @@
-### My thought process and approach to solving this challenge is documented below.
+### My approach to solving the challenge is documented below as a simple brief.
 
 I initialized a new project with npm init -y, ran npx tsc --init to get a tsconfig.json file, then installed PROD and DEV dependencies.
 
@@ -46,3 +46,16 @@ CREATE TABLE Consumptions (
     updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_consumption_user_id FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
 );
+
+
+I then implemented the addIndex method of indexController, which is the most complicated part of this simple server.
+
+The logic handles both cases of insertion provided in requirements doc:
+1. Regular order: Feb1 with indexValue of 100 being inserted first - Feb3 with indexValue of 500 being inserted second
+2. Reverse order: Feb3 with indexValue of 500 being inserted first - Feb1 with indexValue of 100 being inserted second
+
+Tested through Postman with mock data and ensured seamless expected output in both cases: consumptions are calculated after second index insertion, correctly, distributed evenly to the date range between two index readings.
+
+I also wrote a Jest test with the help of ChatGPT to make sure they pass.
+They seem to miss a simple case - a string mismatch between expected return values.
+But all functions work as expected; entity relations are set up properly, and data is calculated and inserted correctly.
