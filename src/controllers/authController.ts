@@ -9,12 +9,12 @@ const jwtSecret = process.env.JWT_SECRET as string;
 export const signup = async (req: Request, res: Response) => {
     const { email, password, companyName } = req.body;
     try {
-        // Check if the user already exists
         const existingUser = await User.findOne({ where: { email } });
+
         if (existingUser) {
             return res.status(400).json({ error: 'User already exists' });
         }
-        // Create a new user
+
         const newUser = await User.create({ email, password, companyName });
         return res.status(201).json(newUser);
     } catch (error) {
@@ -26,16 +26,15 @@ export const signup = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
 	const { email, password } = req.body;
 	try {
-			// Check if the user exists
 			const user = await User.findOne({ where: { email } });
 			if (!user) {
 					return res.status(404).json({ error: 'User not found' });
 			}
-			// Check password
+
 			if (user.password !== password) {
 					return res.status(401).json({ error: 'Invalid password' });
 			}
-			// Generate JWT token
+
 			const token = jwt.sign({ userId: user.id }, jwtSecret);
 			return res.status(200).json({ token });
 	} catch (error) {
