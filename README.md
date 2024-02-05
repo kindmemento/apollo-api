@@ -47,7 +47,7 @@ Follow these steps to set up the project:
   updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_consumption_user_id FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE
   );
-```
+	```
 
 3. **Configure Database Credentials**:
 
