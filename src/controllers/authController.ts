@@ -4,7 +4,7 @@ import { User } from '../models/user';
 import dotenv from 'dotenv';
 
 dotenv.config()
-const jwtSecret = process.env.JWT_SECRET as string;
+const jwtSecret = process.env.JWT_SECRET as string || "secret";
 
 export const signup = async (req: Request, res: Response) => {
     const { email, password, companyName } = req.body;
