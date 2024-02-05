@@ -45,7 +45,7 @@ export const addIndex = async (req: Request, res: Response) => {
 		}
 
 		if (!earlierRecord) {
-			// If this is the first index record, consumption can/will not be recorded and calculated.
+			// If this is the first index record, consumption can/will not be recorded and calculated
 			await Index.create({ userId, indexDate, indexValue })
 			return res.status(201).json({ message: "Index added successfully." })
 		}
