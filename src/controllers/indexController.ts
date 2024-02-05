@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Index } from '../models/index';
 import { Consumption } from "../models/consumption";
 import { Op } from "sequelize";
+import { User } from "../models/user";
 
 export const addIndex = async (req: Request, res: Response) => {
 	try {
@@ -10,6 +11,12 @@ export const addIndex = async (req: Request, res: Response) => {
 
 			if (!userId || !indexDate || !indexValue || indexValue < 0) {
 					return res.status(400).json({ error: "Invalid or missing fields in the request body" });
+			}
+
+			// Check if the user exists
+			const existingUser = await User.findOne({ where: { id: userId } });
+			if (!existingUser) {
+				return res.status(404).json({ error: "User not found" });
 			}
 
 			await Index.create({ userId, indexDate, indexValue });
@@ -34,7 +41,7 @@ export const addIndex = async (req: Request, res: Response) => {
 			const consumptionValue = indexValue - previousIndex.indexValue;
 			await Consumption.create({ userId, consumptionDate: indexDate, consumptionValue });
 
-			return res.status(201).json({ message: "Index and consumption added successfully" });
+			return res.status(201).json({ message: "Index and consumption added successfully." });
 	} catch (error) {
 			console.error("Error adding index:", error);
 			return res.status(500).json({ error: "Internal server error" });
