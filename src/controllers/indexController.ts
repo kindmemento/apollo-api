@@ -6,17 +6,17 @@ import { User } from "../models/user";
 
 export const addIndex = async (req: Request, res: Response) => {
 	try {
-			const userId = req.userId || req.body.userId // Attempt to extract userId from request headers first, fallback to request body as a failsafe
+			const userId = req.userId || req.body.userId; // Attempt to extract userId from request headers first, fallback to request body as a failsafe
 			const { indexDate, indexValue } = req.body;
 
 			if (!userId || !indexDate || !indexValue || indexValue < 0) {
 					return res.status(400).json({ error: "Invalid or missing fields in the request body" });
 			}
 
-			// Check if the user exists
+			// To reduce computational cost, return without proceeding if user does not exist
 			const existingUser = await User.findOne({ where: { id: userId } });
 			if (!existingUser) {
-				return res.status(404).json({ error: "User not found" });
+					return res.status(404).json({ error: "User not found" });
 			}
 
 			await Index.create({ userId, indexDate, indexValue });
@@ -26,27 +26,48 @@ export const addIndex = async (req: Request, res: Response) => {
 					where: {
 							userId,
 							indexDate: {
-									[Op.lt]: indexDate // Find the latest index before the current date
-							}
+									[Op.lt]: indexDate, // Find the latest index before the current date
+							},
 					},
-					order: [['indexDate', 'DESC']], // Order by indexDate in descending order to get the latest
-					attributes: ['indexValue'] // Only fetch indexValue
+					order: [["indexDate", "DESC"]], // Order by indexDate in descending order to get the latest
+					attributes: ["indexValue"], // Only fetch indexValue
 			});
 
 			if (!previousIndex) {
-				// If this is the first index record, consumption can/will not be recorded and calculated.
-				return res.status(201).json({ message: "Index added successfully." })
+					// If this is the first index record, consumption can/will not be recorded and calculated.
+					return res.status(201).json({ message: "Index added successfully." });
 			}
 
+			// Calculate consumption and create records for each day in between
 			const consumptionValue = indexValue - previousIndex.indexValue;
-			await Consumption.create({ userId, consumptionDate: indexDate, consumptionValue });
+			const consumptionDates = getDatesInRange(previousIndex.indexDate, indexDate);
+			const consumptionPerDay = consumptionValue / consumptionDates.length;
+
+			// Create consumption records for each day in between
+			await Promise.all(
+					consumptionDates.map(async (date) => {
+							await Consumption.create({ userId, consumptionDate: date, consumptionValue: consumptionPerDay });
+					})
+			);
 
 			return res.status(201).json({ message: "Index and consumption added successfully." });
 	} catch (error) {
 			console.error("Error adding index:", error);
 			return res.status(500).json({ error: "Internal server error" });
 	}
-}
+};
+
+// Helper function to get dates in range between two dates
+const getDatesInRange = (startDate: Date, endDate: Date): Date[] => {
+	const dates: Date[] = [];
+	let currentDate = new Date(startDate);
+	const end = new Date(endDate);
+	while (currentDate < end) {
+			dates.push(new Date(currentDate));
+			currentDate.setDate(currentDate.getDate() + 1);
+	}
+	return dates;
+};
 
 export const deleteIndex = async (req: Request, res: Response) => {
 	try {
